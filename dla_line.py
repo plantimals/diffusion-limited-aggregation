@@ -5,8 +5,8 @@ import randomwalk
 import itertools
 import random
 
-p_x = 300
-p_y = 300
+p_x = 1000
+p_y = 1000
 on_square = 255
 
 def is_near(point, platten):
@@ -17,11 +17,15 @@ def is_near(point, platten):
   up = platten[x][y + 1] == on_square
   left = platten[x - 1][y] == on_square
   down = platten[x][y - 1] == on_square
-  return right or up or left or down
+  q1 = platten[x + 1][y + 1] == on_square
+  q2 = platten[x - 1][y + 1] == on_square
+  q3 = platten[x - 1][y - 1] == on_square
+  q4 = platten[x + 1][y - 1] == on_square
+  return right or up or left or down or q1 or q2 or q3 or q4
 
 def get_start():
-  x = random.randrange(-p_x,2*p_x)
-  y = random.randrange(-p_y,2*p_y)
+  x = random.randrange(0,p_x)
+  y = random.randrange(0,p_y)
   return (x,y)
 
 def get_grey(x):
@@ -35,17 +39,14 @@ def write_png(platten):
 
 platten = []
 for _ in range(p_y):
-  platten.append(list(itertools.repeat(0,p_x)))
-platten[int(p_x/2)][int(p_y/2)]=on_square
+  f = on_square if _ == p_y - 1 else 0
+  platten.append(list(itertools.repeat(f,p_x)))
 
-for n in range(100000):
-  x,y = get_start()
-  rw = randomwalk.RandomWalk(x,y)
-  while rw.count < 1000:
+for n in range(10000):
+  rw = randomwalk.RandomWalk(p_x,p_y)
+  while not is_near((rw.x,rw.y), platten):
     rw.iterate()
-    if is_near((rw.x,rw.y), platten):
-      platten[rw.x][rw.y] = on_square
-      break
+  platten[rw.x][rw.y] = on_square
   #print "{0}, {1}".format(rw.x, rw.y)
 
 
