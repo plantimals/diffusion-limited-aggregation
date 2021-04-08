@@ -33,7 +33,7 @@ def get_grey(x):
   return 255 if x == 1 else 0
 
 def write_png(platten):
-  f = open('dla_new.png', 'wb')      # binary mode is important
+  f = open('multi-3.png', 'wb')      # binary mode is important
   w = png.Writer(p_x, p_y, greyscale=True)
   w.write(f, platten)
   f.close()
@@ -46,9 +46,16 @@ def write_png(platten):
 platten = []
 for _ in range(p_y):
   platten.append(list(itertools.repeat(0, p_x)))
-platten[int(p_x/2)][int(p_y/2)] = on_square
+platten[int(p_x*0.52)][int(p_y*0.52)] = on_square
+platten[int(p_x*0.125)][int(p_y*0.125)] = on_square
+platten[int(p_x*0.875)][int(p_y*0.125)] = on_square
+platten[int(p_x*0.125)][int(p_y*0.875)] = on_square
+platten[int(p_x*0.5)][int(p_y*0.875)] = on_square
 
-for n in range(10000):
+
+for n in range(25000):
+  if n % 500 == 0:
+      print n
   rw = randomwalk.RandomWalk(p_x,p_y)
   while not is_near((rw.x,rw.y), platten):
     rw.iterate()
